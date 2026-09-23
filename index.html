@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm Hóa Học 12 - Lipid & Chất Béo</title>
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --text-color: #1e293b;
+            --correct-color: #16a34a;
+            --wrong-color: #dc2626;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 5px;
+        }
+
+        p.subtitle {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+        }
+
+        .question-card {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .question-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+            color: #0f172a;
+        }
+
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .option-item {
+            margin-bottom: 8px;
+        }
+
+        .option-item label {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .option-item label:hover {
+            background-color: #f1f5f9;
+        }
+
+        .option-item input[type="radio"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Styling for Quiz Results */
+        .correct-answer {
+            background-color: #dcfce7 !important;
+            border-color: var(--correct-color) !important;
+            color: #14532d;
+            font-weight: 600;
+        }
+
+        .wrong-answer {
+            background-color: #fee2e2 !important;
+            border-color: var(--wrong-color) !important;
+            color: #7f1d1d;
+        }
+
+        .explanation {
+            display: none;
+            margin-top: 12px;
+            padding: 10px;
+            background-color: #eff6ff;
+            border-left: 4px solid var(--primary-color);
+            font-size: 0.95rem;
+            color: #1e40af;
+        }
+
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary-color);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin-top: 20px;
+        }
+
+        .btn-submit:hover {
+            background-color: #1d4ed8;
+        }
+
+        #result-box {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            background-color: #e0f2fe;
+            border-radius: 8px;
+            margin-bottom: 25px;
+        }
+
+        #result-box h2 {
+            margin: 0 0 10px 0;
+            color: #0369a1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>KÍỂM TRA TRẮC NGHIỆM HÓA HỌC 12</h1>
+    <p class="subtitle">Chủ đề: Lipid - Chất Béo (14 câu hỏi)</p>
+
+    <div id="result-box">
+        <h2>Kết quả bài làm</h2>
+        <p id="score-text" style="font-size: 1.3rem; font-weight: bold;"></p>
+    </div>
+
+    <form id="quiz-form">
+        <div id="questions-container"></div>
+        <button type="button" class="btn-submit" onclick="submitQuiz()">Nộp Bài & Xem Đáp Án</button>
+    </form>
+</div>
+
+<script>
+    const quizData = [
+        {
+            question: "Câu 1: Chất béo là trieste của glixerol với loại axit nào sau đây?",
+            options: [
+                "A. Axit vô cơ",
+                "B. Axit béo",
+                "C. Axit dicarboxylic",
+                "D. Axit xút"
+            ],
+            answer: 1,
+            explanation: "Theo định nghĩa, chất béo (triacylglycerol) là trieste của glixerol với các axit béo."
+        },
+        {
+            question: "Câu 2: Công thức hóa học nào sau đây là của axit stearic?",
+            options: [
+                "A. C15H31COOH",
+                "B. C17H33COOH",
+                "C. C17H35COOH",
+                "D. C17H31COOH"
+            ],
+            answer: 2,
+            explanation: "Axit stearic là axit béo no, có công thức C17H35COOH."
+        },
+        {
+            question: "Câu 3: Công thức cấu tạo thu gọn của chất béo Triolein là:",
+            options: [
+                "A. (C17H35COO)3C3H5",
+                "B. (C15H31COO)3C3H5",
+                "C. (C17H33COO)3C3H5",
+                "D. (C17H31COO)3C3H5"
+            ],
+            answer: 2,
+            explanation: "Triolein là trieste của glixerol với axit oleic (C17H33COOH), công thức là (C17H33COO)3C3H5."
+        },
+        {
+            question: "Câu 4: Ở điều kiện thường, chất nào sau đây tồn tại ở trạng thái lỏng?",
+            options: [
+                "A. Tristearin",
+                "B. Tripalmitin",
+                "C. Mỡ lợn",
+                "D. Triolein"
+            ],
+            answer: 3,
+            explanation: "Triolein có chứa các gốc axit béo không no (gốc oleat) nên ở điều kiện thường tồn tại ở trạng thái lỏng (dầu thực vật)."
+        },
+        {
+            question: "Câu 5: Phản ứng thủy phân chất béo trong môi trường kiềm còn được gọi là gì?",
+            options: [
+                "A. Phản ứng este hóa",
+                "B. Phản ứng xà phòng hóa",
+                "C. Phản ứng hiđro hóa",
+                "D. Phản ứng trùng hợp"
+            ],
+            answer: 1,
+            explanation: "Phản ứng thủy phân chất béo trong dung dịch kiềm (NaOH, KOH) tạo ra muối của axit béo (xà phòng) và glixerol nên được gọi là phản ứng xà phòng hóa."
+        },
+        {
+            question: "Câu 6: Thủy phân hoàn toàn 1 mol triolein trong dung dịch NaOH đun nóng thu được bao nhiêu mol glixerol?",
+            options: [
+                "A. 1 mol",
+                "B. 2 mol",
+                "C. 3 mol",
+                "D. 4 mol"
+            ],
+            answer: 0,
+            explanation: "Phương trình: (C17H33COO)3C3H5 + 3NaOH -> 3C17H33COONa + 1C3H5(OH)3. Tỉ lệ mol giữa chất béo và glixerol luôn là 1 : 1."
+        },
+        {
+            question: "Câu 7: Để chuyển hóa chất béo lỏng (dầu ăn) thành chất béo rắn (bơ nhân tạo), người ta dùng phản ứng nào?",
+            options: [
+                "A. Phản ứng hiđro hóa (cộng H2, xúc tác Ni, t°)",
+                "B. Phản ứng xà phòng hóa",
+                "C. Phản ứng oxi hóa hoàn toàn",
+                "D. Phản ứng thủy phân trong axit"
+            ],
+            answer: 0,
+            explanation: "Cho chất béo lỏng tác dụng với H2 (xúc tác Ni, đun nóng) sẽ cộng H2 vào các nối đôi C=C để chuyển gốc không no thành gốc no (rắn)."
+        },
+        {
+            question: "Câu 8: Phát biểu nào sau đây KHÔNG ĐÚNG về tính chất vật lý của chất béo?",
+            options: [
+                "A. Nhẹ hơn nước",
+                "B. Không tan trong nước",
+                "C. Tan nhiều trong nước lạnh",
+                "D. Tan tốt trong dung môi hữu cơ như benzene, xăng"
+            ],
+            answer: 2,
+            explanation: "Chất béo hoàn toàn không tan trong nước (kể cả nước lạnh hay nước nóng), nhưng tan tốt trong các dung môi hữu cơ không cực."
+        },
+        {
+            question: "Câu 9: Dầu ăn và dầu mỏ (dầu bôi trơn máy) có điểm chung nào sau đây?",
+            options: [
+                "A. Đều là thành phần chính của tế bào sinh học",
+                "B. Đều chứa các nguyên tố C, H, O",
+                "C. Đều bị thủy phân trong dung dịch kiềm",
+                "D. Đều không tan trong nước và nhẹ hơn nước"
+            ],
+            answer: 3,
+            explanation: "Dầu ăn là chất béo (chứa C, H, O), dầu mỏ là hiđrocacbon (chỉ chứa C, H). Cả hai đều không tan trong nước và nhẹ hơn nước."
+        },
+        {
+            question: "Câu 10: Công thức phân tử tổng quát của chất béo Triolein là:",
+            options: [
+                "A. C57H110O6",
+                "B. C57H104O6",
+                "C. C51H98O6",
+                "D. C57H98O6"
+            ],
+            answer: 1,
+            explanation: "Triolein có công thức (C17H33COO)3C3H5. Tổng số nguyên tử: 18x3 + 3 = 57 C; 33x3 + 5 = 104 H; 6 O. Do đó CPT là C57H104O6."
+        },
+        {
+            question: "Câu 11: Dầu mỡ động thực vật để lâu ngoài không khí thường bị ôi thiu. Nguyên nhân chính là do:",
+            options: [
+                "A. Liên kết đôi C=C ở gốc axit béo không no bị oxi hóa chậm bởi oxy không khí",
+                "B. Chất béo tác dụng với hơi nước trong không khí tạo ra xà phòng",
+                "C. Sự bay hơi của các gốc glixerol",
+                "D. Chất béo bị phân hủy tạo ra khí CO2 và H2O"
+            ],
+            answer: 0,
+            explanation: "Nối đôi C=C ở gốc axit béo không no bị oxi hóa chậm bởi oxy không khí tạo thành peoxit, sau đó phân hủy thành aldehyde/xeton có mùi hôi xốc."
+        },
+        {
+            question: "Câu 12: Đun nóng chất béo X với dung dịch H2SO4 loãng thu được glixerol và axit palmitic. X là:",
+            options: [
+                "A. Triolein",
+                "B. Tristearin",
+                "C. Tripalmitin",
+                "D. Trilinolein"
+            ],
+            answer: 2,
+            explanation: "Tripalmitin khi thủy phân sẽ tạo thành glixerol và axit palmitic (C15H31COOH)."
+        },
+        {
+            question: "Câu 13: Axit nào sau đây thuộc loại axit béo không no có 1 liên kết đôi C=C?",
+            options: [
+                "A. Axit palmitic",
+                "B. Axit stearic",
+                "C. Axit oleic",
+                "D. Axit acetic"
+            ],
+            answer: 2,
+            explanation: "Axit oleic (C17H33COOH) có một liên kết đôi C=C ở vị trí C9-C10 trong phân tử."
+        },
+        {
+            question: "Câu 14: Đun nóng 1 mol chất béo cần dùng tối đa bao nhiêu mol NaOH để xà phòng hóa hoàn toàn?",
+            options: [
+                "A. 1 mol",
+                "B. 2 mol",
+                "C. 3 mol",
+                "D. 6 mol"
+            ],
+            answer: 2,
+            explanation: "Vì chất béo là trieste (có 3 nhóm ester -COO-) nên 1 mol chất béo luôn phản ứng vừa đủ với 3 mol NaOH."
+        }
+    ];
+
+    function renderQuiz() {
+        const container = document.getElementById('questions-container');
+        let html = '';
+
+        quizData.forEach((q, index) => {
+            html += `
+                <div class="question-card" id="q-card-${index}">
+                    <div class="question-title">${q.question}</div>
+                    <ul class="options-list">
+            `;
+
+            q.options.forEach((opt, optIndex) => {
+                html += `
+                    <li class="option-item">
+                        <label id="label-${index}-${optIndex}">
+                            <input type="radio" name="question-${index}" value="${optIndex}">
+                            ${opt}
+                        </label>
+                    </li>
+                `;
+            });
+
+            html += `
+                    </ul>
+                    <div class="explanation" id="exp-${index}">
+                        <strong>Giải thích:</strong> ${q.explanation}
+                    </div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        const total = quizData.length;
+
+        quizData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="question-${index}"]:checked`);
+            const expBox = document.getElementById(`exp-${index}`);
+            
+            // Show explanation
+            expBox.style.display = 'block';
+
+            // Reset labels style
+            q.options.forEach((_, optIndex) => {
+                const label = document.getElementById(`label-${index}-${optIndex}`);
+                label.classList.remove('correct-answer', 'wrong-answer');
+            });
+
+            // Highlight correct answer
+            const correctLabel = document.getElementById(`label-${index}-${q.answer}`);
+            correctLabel.classList.add('correct-answer');
+
+            if (selected) {
+                const userChoice = parseInt(selected.value);
+                if (userChoice === q.answer) {
+                    score++;
+                } else {
+                    const wrongLabel = document.getElementById(`label-${index}-${userChoice}`);
+                    wrongLabel.classList.add('wrong-answer');
+                }
+            }
+        });
+
+        // Show result box
+        const resultBox = document.getElementById('result-box');
+        const scoreText = document.getElementById('score-text');
+        resultBox.style.display = 'block';
+        
+        const score10 = ((score / total) * 10).toFixed(1);
+        scoreText.innerText = `Bạn trả lời đúng ${score}/${total} câu (${score10}/10 điểm)`;
+
+        // Scroll to top to see score
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Render questions when page loads
+    window.onload = renderQuiz;
+</script>
+
+</body>
+</html>
